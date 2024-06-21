@@ -10,14 +10,15 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMainHandleStatusOk(t *testing.T) {
+func TestMainHandleOk(t *testing.T) {
 	req := httptest.NewRequest("GET", "/cafe?count=1&city=moscow", nil)
 
 	responseRecorder := httptest.NewRecorder()
 	handler := http.HandlerFunc(mainHandle)
 	handler.ServeHTTP(responseRecorder, req)
 
-	assert.Equal(t, responseRecorder.Code, http.StatusOK)
+	require.Equal(t, responseRecorder.Code, http.StatusOK)
+	assert.NotEmpty(t, responseRecorder.Body)
 }
 
 func TestMainHandlerBadCity(t *testing.T) {
@@ -45,5 +46,5 @@ func TestMainHandlerWhenCountMoreThanTotal(t *testing.T) {
 	require.Equal(t, responseRecorder.Code, http.StatusOK)
 
 	cafe := strings.Split(responseRecorder.Body.String(), ",")
-	assert.Equal(t, len(cafe), totalCount)
+	assert.Len(t, cafe, totalCount)
 }
